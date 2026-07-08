@@ -9,6 +9,11 @@ const packageJson = JSON.parse(
 ) as { version?: string }
 const buildTime = new Date().toISOString()
 
+// 子路径部署：通过 VITE_BASE_PATH（如 /stock）让打包产物挂在非根路径下。
+// 默认空字符串 -> 根路径（与现有部署行为一致）。
+const rawBasePath = process.env.VITE_BASE_PATH?.trim().replace(/\/+$/, '') || ''
+const appBase = rawBasePath ? `${rawBasePath}/` : '/'
+
 const vendorChunkByPackage: Record<string, string> = {
   react: 'vendor-react',
   'react-dom': 'vendor-react',
@@ -92,6 +97,7 @@ const getVendorChunkName = (id: string): string | undefined => {
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: appBase,
   define: {
     __APP_PACKAGE_VERSION__: JSON.stringify(packageJson.version ?? '0.0.0'),
     __APP_BUILD_TIME__: JSON.stringify(buildTime),

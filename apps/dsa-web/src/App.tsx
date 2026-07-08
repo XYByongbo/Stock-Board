@@ -2,6 +2,7 @@ import type React from 'react';
 import { lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ApiErrorAlert, Shell } from './components/common';
+import { BASE_PATH, LOGIN_PATH } from './utils/constants';
 import {
   PageLoadingFallback,
   RouteOutletBoundary,
@@ -55,7 +56,7 @@ const AppContent: React.FC = () => {
   }
 
   if (authEnabled && !loggedIn) {
-    if (location.pathname === '/login') {
+    if (location.pathname === LOGIN_PATH) {
       return (
         <StandaloneRouteBoundary>
           <LoginPage />
@@ -66,7 +67,7 @@ const AppContent: React.FC = () => {
     return <Navigate to={`/login?redirect=${redirect}`} replace />;
   }
 
-  if (location.pathname === '/login') {
+  if (location.pathname === LOGIN_PATH) {
     return <Navigate to="/" replace />;
   }
 
@@ -97,7 +98,7 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <UiLanguageProvider>
-      <Router>
+      <Router basename={BASE_PATH || undefined}>
         <AuthProvider>
           <AppContent />
         </AuthProvider>

@@ -6,6 +6,7 @@
 
 import type { StockIndexData, StockIndexItem, StockIndexTuple } from '../types/stockIndex';
 import { INDEX_FIELD } from './stockIndexFields';
+import { BASE_PATH } from './constants';
 
 export interface IndexLoadResult {
   /** Index data */
@@ -26,7 +27,8 @@ export interface IndexLoadResult {
 export async function loadStockIndex(): Promise<IndexLoadResult> {
   try {
     // Add time parameter to bypass cache (in case the backend doesn't handle ETag/Cache-Control)
-    const response = await fetch(`/stocks.index.json?_t=${Math.floor(Date.now() / 3600000)}`);
+    // 子路径部署（如 /stock）下也需带上前缀，否则会请求到根路径而 404。
+    const response = await fetch(`${BASE_PATH}/stocks.index.json?_t=${Math.floor(Date.now() / 3600000)}`);
 
     if (!response.ok) {
       throw new Error(`Failed to load index: ${response.status} ${response.statusText}`);
